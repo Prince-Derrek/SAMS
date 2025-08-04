@@ -25,7 +25,6 @@ namespace SamsApi.Helpers
 
             var claims = new List<Claim>
             {
-                // new Claim(JwtRegisteredClaimNames.Sub, user.userName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, user.Role.Name)

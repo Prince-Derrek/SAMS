@@ -2,9 +2,9 @@
 {
     public class LoginRequestDTO
     {
-        public string userId
+        public string Id
         { get; set; } = null!;
-        public string userSecret
+        public string UserSecret
         { get; set; } = null!;
     }
 }
