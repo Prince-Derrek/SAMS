@@ -1,0 +1,51 @@
+﻿# Ignore build outputs
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Rider & VSCode settings
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+packages/
+.nuget/
+
+# EF Core Migrations Snapshot (optional if auto-generated and shouldn't be tracked)
+**/Migrations/*Snapshot.cs
+
+# ASP.NET sensitive config
+appsettings.json
+appsettings.*.json
+
+# dotnet secrets (if used)
+secrets.json
+
+# Others
+*.pdb
+*.cache
+*.db
+*.pid
+*.sqlite
+*.mdf
+*.ldf
+
+# Auto-generated files
+Generated_Code/
+GeneratedFiles/
+
+SamsApi/
