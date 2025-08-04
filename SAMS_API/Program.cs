@@ -6,6 +6,7 @@ using Serilog;
 using Swashbuckle.AspNetCore;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using SamsApi.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,9 @@ builder.Host.UseSerilog();
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddScoped<JwtHelper>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -51,7 +54,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
