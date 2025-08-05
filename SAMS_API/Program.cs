@@ -20,6 +20,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration
+          .SetBasePath(Directory.GetCurrentDirectory())
+          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+          .AddEnvironmentVariables();
+
         // -------------------- Serilog Config --------------------
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
