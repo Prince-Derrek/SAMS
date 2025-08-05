@@ -14,76 +14,80 @@ using SamsApi.Services.Interfaces;
 using Serilog;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// -------------------- Serilog Config --------------------
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
-builder.Host.UseSerilog();
-
-// -------------------- Services --------------------
-builder.Services.AddControllers();
-builder.Services.AddScoped<JwtHelper>();
-builder.Services.AddScoped<IUserService, UserService>();
-
-// EF Core DbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Custom Authorization
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PolicyProvider>();
-builder.Services.AddScoped<IAuthorizationHandler, PolicyHandler>();
-
-// AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-// JWT Authentication
-builder.Services.AddAuthentication(options =>
+public class Program
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = true;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
+    public static void Main(string[] args)
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-        ),
-    };
-});
+        var builder = WebApplication.CreateBuilder(args);
 
-// Authorization (uses your PolicyProvider)
-builder.Services.AddAuthorization();
+        // -------------------- Serilog Config --------------------
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .CreateLogger();
+        builder.Host.UseSerilog();
 
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "SAMS API",
-        Version = "v1"
-    });
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter your token:"
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        // -------------------- Services --------------------
+        builder.Services.AddControllers();
+        builder.Services.AddScoped<JwtHelper>();
+        builder.Services.AddScoped<IUserService, UserService>();
+
+        // EF Core DbContext
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        // Custom Authorization
+        builder.Services.AddSingleton<IAuthorizationPolicyProvider, PolicyProvider>();
+        builder.Services.AddScoped<IAuthorizationHandler, PolicyHandler>();
+
+        // AutoMapper
+        builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+        // JWT Authentication
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = true;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+                ),
+            };
+        });
+
+        // Authorization (uses your PolicyProvider)
+        builder.Services.AddAuthorization();
+
+        // Swagger
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "SAMS API",
+                Version = "v1"
+            });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Enter your token:"
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -97,53 +101,55 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
-});
+        });
 
-var app = builder.Build();
+        var app = builder.Build();
 
-// -------------------- Seed Data --------------------
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    SeederData.Seed(db);
-}
+        // -------------------- Seed Data --------------------
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            SeederData.Seed(db);
+        }
 
-// -------------------- Middleware --------------------
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SAMS API v1");
-    });
-}
+        // -------------------- Middleware --------------------
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SAMS API v1");
+            });
+        }
 
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-        Log.Error(exceptionHandlerPathFeature?.Error, "Unhandled exception occurred");
-        context.Response.Redirect("/Error");
-    });
-});
+        app.UseExceptionHandler(errorApp =>
+        {
+            errorApp.Run(async context =>
+            {
+                var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                Log.Error(exceptionHandlerPathFeature?.Error, "Unhandled exception occurred");
+                context.Response.Redirect("/Error");
+            });
+        });
 
-app.UseSerilogRequestLogging();
+        app.UseSerilogRequestLogging();
 
-app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
 
-app.UseAuthentication(); 
-app.UseAuthorization();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-app.MapControllers();
+        app.MapControllers();
 
-if (app.Environment.IsDevelopment())
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        DbInitializer.Seed(db);
+        if (app.Environment.IsDevelopment())
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                DbInitializer.Seed(db);
+            }
+        }
+
+        app.Run();
     }
 }
-
-app.Run();

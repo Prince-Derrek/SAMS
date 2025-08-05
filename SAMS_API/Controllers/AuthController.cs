@@ -39,12 +39,15 @@ namespace SamsApi.Controllers
                 .ThenInclude(r => r.RolePolicies)
                   .ThenInclude(rp => rp.Policies)
               .FirstOrDefaultAsync(u => u.Id == parsedUserId && u.isActive);
-            _logger.LogInformation($"{user.Id} found in the Db");
-
+            
             if (user == null)
             {
-                _logger.LogInformation($"{user.Id} could not be found or is inactive");
+                _logger.LogInformation("User could not be found or is inactive");
                 return Unauthorized("User not found or inactive.");
+            }
+            else
+            {
+                _logger.LogInformation("User found in the Db");
             }
 
             if (user.UserSecret != loginDto.UserSecret)
