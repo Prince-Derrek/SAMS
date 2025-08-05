@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SamsApi.Data;
 using SamsApi.Helpers;
+using SamsApi.Mappings;
 using Serilog;
 using Swashbuckle.AspNetCore;
 using System.Text;
@@ -60,7 +61,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -114,7 +115,7 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
