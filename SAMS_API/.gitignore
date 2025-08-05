@@ -30,7 +30,6 @@ packages/
 
 # ASP.NET sensitive config
 appsettings.json
-appsettings.*.json
 
 # dotnet secrets (if used)
 secrets.json

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamsApi.UnitTests", "..\Sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamsApi.IntegrationTests", "..\SamsApi.IntegrationTests\SamsApi.IntegrationTests.csproj", "{4EA5F5A3-8532-4D2C-8DB3-F3F366BD7F72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMS_UI", "..\SAMS_UI\SAMS_UI.csproj", "{725F1624-FF34-48EF-8CFE-64039A7057AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMS_UI", "..\SAMS_UI\SAMS_UI.csproj", "{EB1AF8FD-9F81-4B59-AD61-61CE4E73014D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{4EA5F5A3-8532-4D2C-8DB3-F3F366BD7F72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EA5F5A3-8532-4D2C-8DB3-F3F366BD7F72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EA5F5A3-8532-4D2C-8DB3-F3F366BD7F72}.Release|Any CPU.Build.0 = Release|Any CPU
-		{725F1624-FF34-48EF-8CFE-64039A7057AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{725F1624-FF34-48EF-8CFE-64039A7057AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{725F1624-FF34-48EF-8CFE-64039A7057AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{725F1624-FF34-48EF-8CFE-64039A7057AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB1AF8FD-9F81-4B59-AD61-61CE4E73014D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB1AF8FD-9F81-4B59-AD61-61CE4E73014D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB1AF8FD-9F81-4B59-AD61-61CE4E73014D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB1AF8FD-9F81-4B59-AD61-61CE4E73014D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
