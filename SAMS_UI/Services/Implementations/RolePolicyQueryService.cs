@@ -8,10 +8,12 @@ namespace SAMS_UI.Services.Implementations
     public class RolePolicyQueryService : IRolePolicyQueryService
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<RolePolicyQueryService> _logger;
 
-        public RolePolicyQueryService(AppDbContext context)
+        public RolePolicyQueryService(AppDbContext context, ILogger<RolePolicyQueryService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<PaginatedListViewModel<RoleViewModel>> GetPaginatedRolesAsync(int pageIndex, int pageSize)
