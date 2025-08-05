@@ -56,7 +56,7 @@ namespace SamsApi.IntegrationTests.Authentication
                     var rolePolicy = new RolePolicy { RoleId = 1, PolicyId = 1, Role = role, Policies = policy };
 
                     var userId = Guid.NewGuid();
-                    var user = new User
+                    var user = new SamsApi.Models.User
                     {
                         Id = userId,
                         UserName = "TestUser",
