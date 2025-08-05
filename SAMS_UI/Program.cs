@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using SAMS_UI.Authorization;
 using SAMS_UI.Data;
 using SAMS_UI.Services.Implementations;
 using SAMS_UI.Services.Interfaces;
@@ -26,6 +28,12 @@ builder.Services.AddScoped<IRolePolicyService, RolePolicyService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthorization();
+
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PolicyHandler>();
 
 
 var app = builder.Build();
