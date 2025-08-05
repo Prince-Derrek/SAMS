@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamsApi", "SamsApi.csproj", "{9D9F4AEE-B80F-4CD1-BBC4-BFEBA00F9B50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamsApi.UnitTests", "..\SamsApi.UnitTests\SamsApi.UnitTests.csproj", "{E0CEA3E1-3877-4C83-B9C2-FE0A346D2A4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9D9F4AEE-B80F-4CD1-BBC4-BFEBA00F9B50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D9F4AEE-B80F-4CD1-BBC4-BFEBA00F9B50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D9F4AEE-B80F-4CD1-BBC4-BFEBA00F9B50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0CEA3E1-3877-4C83-B9C2-FE0A346D2A4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0CEA3E1-3877-4C83-B9C2-FE0A346D2A4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0CEA3E1-3877-4C83-B9C2-FE0A346D2A4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0CEA3E1-3877-4C83-B9C2-FE0A346D2A4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
