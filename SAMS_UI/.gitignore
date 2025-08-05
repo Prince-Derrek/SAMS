@@ -27,8 +27,6 @@ TestResults/
 
 # ASP.NET Core Configs (local-sensitive)
 appsettings.json
-appsettings.Development.json
-TextFile.txt
 
 # Entity Framework Migrations if sensitive
 # Migrations/
