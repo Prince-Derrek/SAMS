@@ -1,35 +1,75 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SamsApi.Authorization;
 using SamsApi.Data;
 using SamsApi.Helpers;
 using SamsApi.Mappings;
+using SamsApi.Services.Implementations;
+using SamsApi.Services.Interfaces;
 using Serilog;
-using Swashbuckle.AspNetCore;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Serilog Config
+// -------------------- Serilog Config --------------------
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 builder.Host.UseSerilog();
 
-// Add services to the container.
-
+// -------------------- Services --------------------
 builder.Services.AddControllers();
-
 builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<IUserService, UserService>();
 
+// EF Core DbContext
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Custom Authorization
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PolicyHandler>();
+
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+// JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+        ),
+    };
+});
+
+// Authorization (uses your PolicyProvider)
+builder.Services.AddAuthorization();
+
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "SAMS API",
         Version = "v1"
@@ -59,43 +99,16 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = true;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-        ),
-    };
-});
-builder.Services.AddAuthorization();
-
 var app = builder.Build();
 
+// -------------------- Seed Data --------------------
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     SeederData.Seed(db);
 }
 
-// Configure the HTTP request pipeline.
+// -------------------- Middleware --------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -110,7 +123,7 @@ app.UseExceptionHandler(errorApp =>
     errorApp.Run(async context =>
     {
         var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-        Log.Error(exceptionHandlerPathFeature?.Error, "Unhandled exception occured");
+        Log.Error(exceptionHandlerPathFeature?.Error, "Unhandled exception occurred");
         context.Response.Redirect("/Error");
     });
 });
@@ -119,6 +132,7 @@ app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
