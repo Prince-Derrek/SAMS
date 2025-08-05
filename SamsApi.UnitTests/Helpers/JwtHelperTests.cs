@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SamsApi.Helpers;
 using SamsApi.Models;
-using Xunit;
 
 namespace SamsApi.UnitTests.Helpers
 {

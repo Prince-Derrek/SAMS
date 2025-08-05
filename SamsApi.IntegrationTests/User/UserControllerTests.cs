@@ -5,12 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using SamsApi.Data;
 using SamsApi.Helpers;
 using SamsApi.Models;
-using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SamsApi.IntegrationTests.Authorization
 {

@@ -2,16 +2,11 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SamsApi;
 using SamsApi.Data;
 using SamsApi.DTOs;
 using SamsApi.Models;
-using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SamsApi.IntegrationTests.Authentication
 {
