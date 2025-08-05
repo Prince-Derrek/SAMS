@@ -7,8 +7,6 @@ using SamsApi.Authorization;
 using SamsApi.Data;
 using SamsApi.Models;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Xunit;
 
 
 namespace SamsApi.UnitTests.Authorization
