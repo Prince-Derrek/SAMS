@@ -1,0 +1,57 @@
+﻿@model SAMS_UI.ViewModels.PaginatedListViewModel<object>
+
+<nav aria-label="Page navigation" class="flex justify-between items-center mt-4 px-4">
+    <ul class="flex items-center gap-4 -space-x-px h-10 text-base mx-auto">
+        <li>
+            <a href="?pageIndex=@(Model.PageIndex - 1)&pageSize=@Model.PageSize"
+               class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+               @(Model.HasPreviousPage ? "" : "aria-disabled=\"true\" tabindex=\"-1\"")>
+                <span class="sr-only">Previous</span>
+                <svg class="w-3 h-3 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+                </svg>
+            </a>
+        </li>
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li>
+                <a href="?pageIndex=@i&pageSize=@Model.PageSize"
+                   class="flex items-center justify-center px-4 h-10 leading-tight @(Model.PageIndex == i ? "text-white bg-matisse-600 dark:border-gray-700 dark:bg-gray-700 dark:text-white" : "text-storm-dust-500 bg-mercury-200 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white")">
+                    @i
+                </a>
+
+            </li>
+        }
+
+        <li>
+            <a href="?pageIndex=@(Model.PageIndex + 1)&pageSize=@Model.PageSize"
+               class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+               @(Model.HasNextPage ? "" : "aria-disabled=\"true\" tabindex=\"-1\"")>
+                <span class="sr-only">Next</span>
+                <svg class="w-3 h-3 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                </svg>
+            </a>
+        </li>
+    </ul>
+
+    <form method="get" class="flex items-center gap-2">
+        <label for="pageSize" class="text-sm text-gray-600">Show</label>
+        <select name="pageSize"
+                onchange="location.href='?pageIndex=@(Model.PageIndex)&pageSize=' + this.value"
+                class="ml-4 w-[60px] border border-gray-300 text-gray-700 text-sm rounded-md focus:ring-matisse-500 focus:border-matisse-500 px-2 py-1">
+            @{
+                var sizes = new[] { 5, 10, 25, 50, 100 };
+                foreach (var size in sizes)
+                {
+                    <option value="@size" selected="@(size == Model.PageSize ? "selected" : null)">
+                        @size
+                    </option>
+                }
+            }
+        </select>
+
+        <input type="hidden" name="pageIndex" value="1" />
+    </form>
+</nav>

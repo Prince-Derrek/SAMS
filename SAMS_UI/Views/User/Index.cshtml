@@ -1,0 +1,79 @@
+﻿﻿@using SAMS_UI.Services.Interfaces
+@using SAMS_UI.ViewModels
+@model SAMS_UI.ViewModels.PaginatedListViewModel<UserViewModel>
+@inject IViewPolicyService ViewPolicyService
+@{
+    ViewData["Title"] = "User List";
+    var userPolicies = await ViewPolicyService.GetPoliciesForCurrentUserAsync(User);
+}
+
+<h3 class="text-l font-nunito-sans mb-10 font-medium text-matisse-600 dark:text-white">APPLICATIONS</h3>
+
+@if (userPolicies.Contains("CanRegisterUsers") && userPolicies.Contains("CanViewUsers"))
+{
+    <a asp-controller="User" asp-action="Create" class=" text-white bg-blue-950 font-medium rounded-lg text-sm px-2.5 py-1.5 text-center me-2 mb-2 "> Create + </a>
+}
+
+<div class="overflow-x-auto border border-gray-300 sm:rounded-lg mt-5 ">
+    <table class="w-full text-sm text-left rtl:text-right text-masala-800 dark:text-white">
+        <thead class="text-xs text-masala-800 uppercase border-b border-gray-300 bg-mustard-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 dark:text-white">
+            <tr>
+                <th scope="col" class="border-r border-gray-300 px-6 py-3">
+                    Client ID
+                </th>
+                <th scope="col" class=" border-r border-gray-300 px-6 py-3">
+                    Client Name
+                </th>
+                @foreach (var user in Model.Items)
+                {
+                    @if (@user.Description != null)
+                    {
+                        <th scope="col" class=" border-r border-gray-300 px-6 py-3">
+                            Description
+                        </th>
+                    }
+                }
+                @if (userPolicies.Contains("CanViewUserDetails"))
+                {
+                    <th scope="col" class="px-6 py-3">
+                        Action
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Items)
+            {
+                <tr class=" text-masala-800 bg-mustard-50 border-b border-gray-300 dark:border-black">
+                    <td class=" border-r border-gray-300 px-6 py-4">
+                        @user.Id.ToString().ToUpper()
+                    </td>
+                    <td class=" border-r border-gray-300 px-6 py-4">
+                        @user.UserName
+                    </td>
+                    @if (@user.Description != null)
+                    {
+                        <td class=" border-r border-gray-300 px-6 py-4">
+                            @user.Description
+                        </td>
+                    }
+                    @if (userPolicies.Contains("CanViewUserDetails"))
+                    {
+                        <td class="px-6 py-4">
+                            @Html.ActionLink("Details", "Details", new { id = user.Id }, new { @class = " bg-blue-950 text-white px-3 py-1 rounded " }) <br />
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@await Html.PartialAsync("_UIPagination", new SAMS_UI.ViewModels.PaginatedListViewModel<object>
+{
+    Items = Model.Items.Cast<object>().ToList(),
+        PageIndex = Model.PageIndex,
+        TotalPages = Model.TotalPages,
+        TotalCount = Model.TotalCount,
+        PageSize = Model.PageSize
+    })

@@ -1,49 +1,146 @@
-﻿<!DOCTYPE html>
+﻿﻿@using System.Security.Claims
+@using SAMS_UI.Services.Interfaces
+@inject IViewPolicyService ViewPolicyService
+@{
+    var userPolicies = await ViewPolicyService.GetPoliciesForCurrentUserAsync(User);
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SAMS_UI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SAMS_UI.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Secure Access Management System</title>
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SAMS_UI</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+<body class=" bg-white flex flex-col min-h-screen">
+    <header class="bg-romance-50">
+        <nav class="fixed top-0 z-50 w-full bg-mustard-50 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+            <div class="px-3 py-3 lg:px-5 lg:pl-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex justify-between items-center gap-[50px]">
+                        <div>
+                            <img src="@Url.Content("~/images/Pesapalrebrandlogo.png")" alt="Logo" class="h-8 ml-[53px] w-auto " />
+                        </div>
+                        <div class="ml-[60px]">
+                            <p class="ml-10 text-sm text-gray-500 dark:text-gray-400 font-nunito font-light tracking-[2px]">
+                                Secure Access Management System
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+                        <button type="button"
+                                class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                                id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
+                                data-dropdown-placement="bottom">
+                            <span class="sr-only">Open user menu</span>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
+                                <svg class="w-5 h-5 text-gray-800 dark:text-white"
+                                     aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     fill="currentColor"
+                                     viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                          d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z"
+                                          clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600"
+                             id="user-dropdown">
+                            <div class="px-4 py-3">
+                                <span class="block text-sm text-matisse-600 dark:text-white">@User.Identity.Name</span>
+                                <span class="block text-sm text-matisse-600 truncate dark:text-gray-400">
+                                    @User.FindFirst(ClaimTypes.GivenName)?.Value
+                                </span>
+                            </div>
+                            <ul class="py-2" aria-labelledby="user-menu-button">
+                                <li>
+                                    <form asp-controller="Access" asp-action="Logout" method="post">
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-300 dark:hover:text-white">
+                                            Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <button data-collapse-toggle="navbar-user" type="button"
+                                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                aria-controls="navbar-user" aria-expanded="false">
+                            <span class="sr-only">Open main menu</span>
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
+                            </svg>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </nav>
+
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
+
+    <aside id="logo-sidebar" class="w-64 fixed top-0 left-0 z-40 h-screen pt-10 bg-red-50 border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
+        <div class="h-full px-3 pb-4 overflow-y-auto bg-red-50 dark:bg-gray-800 mt-10">
+            <ul class="space-y-2 font-medium">
+                <li>
+                    <a asp-controller="Dashboard" asp-action="Index" class="flex items-center text-matisse-700 font-medium rounded-lg text-sm p-1 pr-1 text-center me-2 mb-1 ml-5 mt-5">
+                        <svg class="w-[22px] h-[22px] text-matisse-700 bg-white mr-2 dark:text-matisse-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd" />
+                        </svg>
+
+                        <span class="ms-3 font-nunito-sans font-normal dark:text-matisse-100">Dashboard</span>
+                    </a>
+                </li>
+                @if (userPolicies.Contains("CanViewUsers"))
+                {
+                    <li>
+                        <a asp-controller="User" asp-action="Index" class="flex items-center text-matisse-700 font-medium rounded-lg text-sm p-1 pr-1 text-center me-2 mb-1 ml-5 mt-5">
+                            <svg class="w-[22px] h-[22px] text-matisse-700 bg-white mr-2 dark:text-matisse-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.25-2.095c.478-.86.75-1.85.75-2.905a5.973 5.973 0 0 0-.75-2.906 4 4 0 1 1 0 5.811ZM15.466 20c.34-.588.535-1.271.535-2v-1a5.978 5.978 0 0 0-1.528-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.535Z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ms-3 font-nunito-sans font-normal dark:text-matisse-100">Manage Users</span>
+                        </a>
+                    </li>
+                }
+                @if (userPolicies.Contains("CanManagePolicies"))
+                {
+                    <li>
+                        <a asp-controller="Policy" asp-action="Index" class="flex items-center text-matisse-700 font-medium rounded-lg text-sm p-1 pr-1 text-center me-2 mb-5 ml-5 mt-5">
+                            <svg class="w-[22px] h-[22px] text-matisse-700 bg-white mr-2 dark:text-matisse-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M11.644 3.066a1 1 0 0 1 .712 0l7 2.666A1 1 0 0 1 20 6.68a17.694 17.694 0 0 1-2.023 7.98 17.406 17.406 0 0 1-5.402 6.158 1 1 0 0 1-1.15 0 17.405 17.405 0 0 1-5.403-6.157A17.695 17.695 0 0 1 4 6.68a1 1 0 0 1 .644-.949l7-2.666Zm4.014 7.187a1 1 0 0 0-1.316-1.506l-3.296 2.884-.839-.838a1 1 0 0 0-1.414 1.414l1.5 1.5a1 1 0 0 0 1.366.046l4-3.5Z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ms-3 font-nunito-sans font-normal dark:text-matisse-100">Policy Management</span>
+                        </a>
+                    </li>
+                }
+                @if (userPolicies.Contains("CanManageRoles"))
+                {
+                    <li>
+                        <a asp-controller="Role" asp-action="Index" class="flex items-center text-matisse-700 font-medium rounded-lg text-sm p-1 pr-1 text-center me-2 mb-5 ml-5 mt-5">
+                            <svg class="w-[22px] h-[22px] text-matisse-700 bg-white mr-2 dark:text-matisse-700 dark:bg-matisse-100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M17 10v1.126c.367.095.714.24 1.032.428l.796-.797 1.415 1.415-.797.796c.188.318.333.665.428 1.032H21v2h-1.126c-.095.367-.24.714-.428 1.032l.797.796-1.415 1.415-.796-.797a3.979 3.979 0 0 1-1.032.428V20h-2v-1.126a3.977 3.977 0 0 1-1.032-.428l-.796.797-1.415-1.415.797-.796A3.975 3.975 0 0 1 12.126 16H11v-2h1.126c.095-.367.24-.714.428-1.032l-.797-.796 1.415-1.415.796.797A3.977 3.977 0 0 1 15 11.126V10h2Zm.406 3.578.016.016c.354.358.574.85.578 1.392v.028a2 2 0 0 1-3.409 1.406l-.01-.012a2 2 0 0 1 2.826-2.83ZM5 8a4 4 0 1 1 7.938.703 7.029 7.029 0 0 0-3.235 3.235A4 4 0 0 1 5 8Zm4.29 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h6.101A6.979 6.979 0 0 1 9 15c0-.695.101-1.366.29-2Z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="ms-3 font-nunito-sans font-normal dark:text-matisse-100">Role Management</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </aside>
+
+    <div class="sm:ml-64 flex flex-col flex-grow pt-20">
+        <main role="main" class="flex-grow p-4">
+            <div class="flex justify-center">
+                <div class="p-4 rounded-lg dark:border-gray-700 w-full max-w-6xl">
+                    @RenderBody()
+                </div>
+            </div>
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - SAMS_UI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

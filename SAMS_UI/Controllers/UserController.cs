@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SAMS_UI.Services.Interfaces;
 using SAMS_UI.ViewModels;
+using System.Security.Claims;
 
 namespace SAMS_UI.Controllers
 {
@@ -11,7 +12,7 @@ namespace SAMS_UI.Controllers
         private readonly IRegisterUserService _registerUserService;
         private readonly IUpdateUserActivityStatus _updateUserActivityStatus;
         private readonly IGetUserById _getUserById;
-        private readonly ILogger<UserController> _logger
+        private readonly ILogger<UserController> _logger;
 
         public UserController(IUserQueryService userQueryService, IRegisterUserService registerUserService, IUpdateUserActivityStatus updateUserActivityStatus, IGetUserById getUserById, ILogger<UserController> logger)
         {
@@ -38,10 +39,16 @@ namespace SAMS_UI.Controllers
             return View(user);
         } 
 
-        [Authorize(Policy = "CanRegisterUsers")]
+        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
+            if (!User.HasClaim("policy", "CanRegisterUsers") && User.HasClaim("policy", "CanViewUsers"))
+            {
+                _logger.LogWarning("User {UserName} lacks policy to access the create user form", User.FindFirst(ClaimTypes.GivenName)?.Value ?? "Unknown");
+                return RedirectToAction("Unauthorized", "Access");
+            }
+            _logger.LogInformation("User {UserName} accessed the Create User form", User.FindFirst(ClaimTypes.GivenName)?.Value ?? "Unknown");
             return View();
         }
 
@@ -69,10 +76,10 @@ namespace SAMS_UI.Controllers
 
         [Authorize(Policy = "CanDisableUsers")]
         [HttpPost]
-        public async Task<IActionResult> ToggleUserActivity(Guid userId, bool isActive)
+        public async Task<IActionResult> ToggleBackendUserActivity(Guid userId, bool isActive)
         {
             _logger.LogInformation("Calling service to update user activity status");
-            var result = await _updateUserActivityStatus.UpdateUserActivityStatusAsync(userId, isActive);
+            var result = await _updateUserActivityStatus.UpdateBackendUserActivityStatusAsync(userId, isActive);
             if (!result)
             {
                 TempData["Error"] = "Failed to update user's activity";
@@ -86,5 +93,27 @@ namespace SAMS_UI.Controllers
 
             return RedirectToAction("Index");
         }
+        [Authorize(Policy = "CanDisableUsers")]
+        [HttpPost]
+        public async Task<IActionResult> ToggleFrontendUserActivity(Guid userId, bool isActive)
+        {
+            _logger.LogInformation("Calling service to update frontend user activity status");
+
+            var result = await _updateUserActivityStatus.UpdateFrontendUserActivityStatusAsync(userId, isActive);
+
+            if (!result)
+            {
+                TempData["Error"] = "Failed to update frontend user's activity status.";
+                _logger.LogWarning("Frontend user activity update failed for user ID: {UserId}", userId);
+            }
+            else
+            {
+                TempData["Success"] = "Frontend user status updated successfully.";
+                _logger.LogInformation("Frontend user activity updated for user ID: {UserId}", userId);
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

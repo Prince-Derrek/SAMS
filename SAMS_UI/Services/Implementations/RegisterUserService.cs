@@ -1,47 +1,66 @@
-﻿using SAMS_UI.Services.Interfaces;
+﻿using SAMS_UI.Data;
+using SAMS_UI.Models;
+using SAMS_UI.Services.Interfaces;
 using SAMS_UI.ViewModels;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
 namespace SAMS_UI.Services.Implementations
 {
     public class RegisterUserService : IRegisterUserService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly AuthTokenManager _tokenManager;
+        private readonly AppDbContext _context;
         private readonly ILogger<RegisterUserService> _logger;
 
-        public RegisterUserService(IHttpClientFactory httpClientFactory, AuthTokenManager tokenManager, ILogger<RegisterUserService> logger)
+        public RegisterUserService(AppDbContext context, ILogger<RegisterUserService> logger)
         {
-            _httpClientFactory = httpClientFactory;
-            _tokenManager = tokenManager;
+            _context = context;
             _logger = logger;
         }
+
+        private string GenerateSecret()
+        {
+            var secret = Convert.ToBase64String(Guid.NewGuid().ToByteArray())
+                .Replace("=", "")
+                .Replace("+", "")
+                .Substring(0, 16);
+
+            _logger.LogDebug("Generated new user secret");
+            return secret;
+        }
+
         public async Task<bool> CreateUserAsync(RegisterViewModel user)
         {
-            _logger.LogInformation("Calling token manager service");
-            var token = await _tokenManager.GetTokenAsync();
+            try
+            {
+                _logger.LogInformation("Attempting to register user locally in frontend DB.");
 
-            _logger.LogInformation("Creating client");
-            var client = _httpClientFactory.CreateClient("BackendApi");
-            _logger.LogInformation("Client created successfully");
+                if (_context.Users.Any(u => u.Username == user.userName))
+                {
+                    _logger.LogWarning("User with same username already exists.");
+                    return false;
+                }
 
-            _logger.LogInformation("Binding token to header");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            _logger.LogInformation("Bind successful");
+                // Create user entity
+                var newUser = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Username = user.userName,
+                    UserSecret = GenerateSecret(),
+                    RoleId = user.RoleId,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                };
 
-            _logger.LogInformation("Serializing new user data");
-            var json = JsonSerializer.Serialize(user);
-            _logger.LogInformation("User data serialized successfully");
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
 
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            _logger.LogInformation("Attempting to reach register endpoint");
-            var response = await client.PostAsync("/api/user/register", content);
-            _logger.LogInformation("Endpoint reached successfully");
-
-            return response.IsSuccessStatusCode;
+                _logger.LogInformation("User registration successful.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "User registration failed.");
+                return false;
+            }
         }
     }
 }

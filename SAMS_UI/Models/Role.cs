@@ -6,5 +6,6 @@
         public string Name { get; set; }
 
         public ICollection<RolePolicy> RolePolicies { get; set; }
+        public ICollection<User> Users { get; set; }
     }
 }

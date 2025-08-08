@@ -2,18 +2,18 @@
 {
     public class UserViewModel
     {
-        public Guid userId
+        public Guid Id
         { get; set; }
 
-        public string userName
+        public string UserName
         { get; set; }
-        public string userSecret
+        public string UserSecret
         { get; set; }
-        public DateTime userCreatedAt
+        public DateTime CreatedAt
         { get; set; }
-        public string Role
+        public string? Role
         { get; set; }
-        public string Description
+        public string? Description
         { get; set; }
         public bool isActive
         { get; set; }

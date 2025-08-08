@@ -1,0 +1,37 @@
+﻿@import "tailwindcss";
+@import "flowbite";
+@theme {
+    --color-red-50: #fff0f0;
+    --color-red-100: #ffdddd;
+    --color-red-200: #ffc0c0;
+    --color-red-300: #ff9494;
+    --color-red-400: #ff5757;
+    --color-red-500: #ff2323;
+    --color-red-600: #ff0000;
+    --color-red-700: #d70000;
+    --color-red-800: #b10303;
+    --color-red-900: #920a0a;
+    --color-red-950: #500000;
+    --color-mustard-50: #fffbeb;
+    --color-mustard-100: #fff5c6;
+    --color-mustard-200: #ffe988;
+    --color-mustard-300: #ffdb58;
+    --color-mustard-400: #ffc520;
+    --color-mustard-500: #f9a407;
+    --color-mustard-600: #dd7b02;
+    --color-mustard-700: #b75606;
+    --color-mustard-800: #94420c;
+    --color-mustard-900: #7a370d;
+    --color-mustard-950: #461b02;
+    --color-navy-blue-50: #f1f4ff;
+    --color-navy-blue-100: #e5e8ff;
+    --color-navy-blue-200: #ced5ff;
+    --color-navy-blue-300: #a7b1ff;
+    --color-navy-blue-400: #767fff;
+    --color-navy-blue-500: #3f42ff;
+    --color-navy-blue-600: #2118ff;
+    --color-navy-blue-700: #1007fa;
+    --color-navy-blue-800: #0d05d2;
+    --color-navy-blue-900: #0c06ac;
+    --color-navy-blue-950: #000080;
+}

@@ -2,6 +2,7 @@
 {
     public interface IUpdateUserActivityStatus
     {
-        Task<bool> UpdateUserActivityStatusAsync(Guid userId, bool isActive);
+        Task<bool> UpdateFrontendUserActivityStatusAsync(Guid userId, bool isActive);
+        Task<bool> UpdateBackendUserActivityStatusAsync(Guid userId, bool isActive);
     }
 }

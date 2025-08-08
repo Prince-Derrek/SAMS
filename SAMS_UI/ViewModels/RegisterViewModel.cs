@@ -4,7 +4,9 @@
     {
         public string userName
         { get; set; }
-        public string Description
+        public string? Description
+        { get; set; }
+        public int RoleId
         { get; set; }
     }
 }

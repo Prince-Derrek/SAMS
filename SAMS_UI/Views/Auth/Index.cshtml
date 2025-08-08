@@ -1,0 +1,43 @@
+﻿@model SAMS_UI.DTOs.LoginDTO
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<section class="bg-gradient-to-br from-purple-600 to-blue-500 min-h-screen flex items-center justify-center">
+    <div class="w-full sm:max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sm:p-8">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">
+            Login to your account
+        </h1>
+
+        <!-- Validation Summary -->
+        <div asp-validation-summary="All" class="text-sm text-red-500 mb-4"></div>
+
+        <form asp-action="Index" method="post" class="space-y-6">
+            <!-- Username -->
+            <div>
+                <label asp-for="Id" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">User Id</label>
+                <input asp-for="Id"
+                       placeholder="3f2504e0-4f89-11d3-9a0c-0305e82c3301"
+                       class="w-full p-2.5 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" />
+                <span asp-validation-for="Id" class="text-sm text-red-500"></span>
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label asp-for="UserSecret" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">User Secret</label>
+                <input asp-for="UserSecret"
+                       type="password"
+                       placeholder="••••••••"
+                       autocomplete="current-password"
+                       class="w-full p-2.5 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" />
+                <span asp-validation-for="UserSecret" class="text-sm text-red-500"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-2.5 px-5 text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-800">
+                Login
+            </button>
+        </form>
+    </div>
+</section>

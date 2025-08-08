@@ -1,0 +1,136 @@
+﻿﻿@using SAMS_UI.Services.Interfaces
+@using SAMS_UI.ViewModels
+@model SAMS_UI.ViewModels.PaginatedListViewModel<PolicyViewModel>
+@inject IViewPolicyService ViewPolicyService
+@{
+    ViewData["Title"] = "Policies";
+    var roles = ViewBag.Roles as List<RoleViewModel>;
+    var userPolicies = await ViewPolicyService.GetPoliciesForCurrentUserAsync(User);
+}
+
+<h3 class="text-l font-nunito-sans mb-10 font-medium text-matisse-600 dark:text-white">POLICIES</h3>
+
+@if (userPolicies.Contains("CanCreatePolicies"))
+{
+    <!-- Create New Policy -->
+    <div class="flex-1 flex-wrap min-w-[200px]">
+        <h3 class="text-lg text-masala-800 font-semibold mb-2">Create New Policy</h3>
+        <form asp-action="CreatePolicy" method="post" class="flex flex-wrap space-y-2">
+            <div class="flex gap-4 ">
+                <input type="text" name="policyName" placeholder="Policy name"
+                       class="w-64 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required />
+
+                <input type="text" name="description" placeholder="Description"
+                       class="w-80 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" />
+            </div>
+
+            <button type="submit"
+                    class="bg-blue-950 text-white px-4 py-2 rounded ml-5 hover:bg-matisse-800 transition">
+                Add Policy
+            </button>
+        </form>
+    </div>
+}
+
+
+
+<div class="overflow-x-auto border border-gray-300 sm:rounded-lg mt-5 ">
+    <table class="w-full text-sm text-left rtl:text-right text-masala-800 dark:text-gray-50 px-6 py-3">
+        <thead class="text-xs text-masala-800 uppercase border-b border-gray-300 bg-mustard-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 dark:text-white">
+            <tr>
+                <th scope="col" class="border-r border-gray-300 px-6 py-3">
+                    Policy
+                </th>
+                <th scope="col" class=" border-r border-gray-300 px-3 py-3 w-50 text-center">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var policy in Model.Items)
+            {
+                <tr class=" text-masala-800 bg-mustard-50 border-b border-gray-300 dark:border-black px-5 py-2">
+                    <td class=" border-r border-gray-300 px-6 py-3">
+                        @policy.Name
+                    </td>
+                    <td class="px-2 py-4 text-center">
+                        <div class="flex flex-wrap justify-center gap-2">
+                            @Html.ActionLink("Details", "Details", new { id = policy.Id }, new { @class = "bg-blue-950 text-white px-3 py-1 rounded" })
+
+                            @if (userPolicies.Contains("CanDeletePolicies"))
+                            {
+                                <!-- Trigger button -->
+                                <button type="button"
+                                        data-modal-target="remove-policy-modal-@policy.Id"
+                                        data-modal-toggle="remove-policy-modal-@policy.Id"
+                                        class="bg-red-700 text-white px-3 py-1 rounded">
+                                    Remove
+                                </button>
+                                <div id="remove-policy-modal-@policy.Id" tabindex="-1"
+                                     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                    <div class="relative p-4 w-full max-w-md max-h-full">
+                                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                            <!-- Close button (top-right X) -->
+                                            <button type="button"
+                                                    class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                    data-modal-hide="remove-policy-modal-@policy.Id">
+                                                <svg class="w-3 h-3" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                </svg>
+                                                <span class="sr-only">Close modal</span>
+                                            </button>
+
+                                            <!-- Modal content -->
+                                            <div class="p-4 md:p-5 text-center">
+                                                <svg class="mx-auto mb-4 text-mexican-red-700 w-12 h-12 dark:text-gray-200" fill="none" viewBox="0 0 20 20">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                          d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                </svg>
+                                                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                                    Are you sure you want to delete this policy?
+                                                    <span class="font-semibold text-gray-700">"@policy.Name"</span>
+                                                </h3>
+
+                                                <!-- Form to actually remove the policy -->
+                                                <form asp-action="RemovePolicy" method="post" class="inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="policyId" value="@policy.Id" />
+                                                    <button type="submit"
+                                                            class="text-white bg-mexican-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                                                            data-modal-hide="remove-policy-modal-@policy.Id">
+                                                        Yes, delete
+                                                    </button>
+                                                </form>
+
+                                                <!-- Cancel button -->
+                                                <button type="button"
+                                                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                                        data-modal-hide="remove-policy-modal-@policy.Id">
+                                                    No, Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+@await Html.PartialAsync("_UIPagination", new SAMS_UI.ViewModels.PaginatedListViewModel<object>
+{
+    Items = Model.Items.Cast<object>().ToList(),
+        PageIndex = Model.PageIndex,
+        TotalPages = Model.TotalPages,
+        TotalCount = Model.TotalCount,
+        PageSize = Model.PageSize
+    })
