@@ -16,6 +16,10 @@ namespace SAMS_UI.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
                 .WithMany(r => r.Users)

@@ -1,37 +1,39 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using SAMS_UI.Data;
 using SAMS_UI.DTOs;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 public class AuthService : IAuthService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly AppDbContext _context;
 
-    public AuthService(IHttpClientFactory httpClientFactory)
+    public AuthService(AppDbContext context)
     {
-        _httpClientFactory = httpClientFactory;
+        _context = context;
     }
 
     public async Task<ClaimsPrincipal?> AuthenticateAndSignInAsync(LoginDTO dto, HttpContext httpContext)
     {
-        var client = _httpClientFactory.CreateClient("BackendApi");
-        var requestUrl = $"/api/auth/login";
-        var response = await client.PostAsJsonAsync(requestUrl, dto);
+        if (!Guid.TryParse(dto.Id, out var userId))
+            return null; // Invalid ID format
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return null;
-        }
+        var user = await _context.Users
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Id == userId && u.UserSecret == dto.UserSecret);
 
-        var apiResponse = await response.Content.ReadFromJsonAsync<TokenResponseDTO>();
-        if (apiResponse is null || string.IsNullOrEmpty(apiResponse.Token))
+        if (user == null)
             return null;
 
-        var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(apiResponse.Token);
-
-        var claims = jwtToken.Claims.ToList();
+        var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role?.Name ?? "")
+    };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
@@ -50,4 +52,5 @@ public class AuthService : IAuthService
 
         return principal;
     }
+
 }

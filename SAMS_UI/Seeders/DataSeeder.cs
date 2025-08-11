@@ -15,7 +15,7 @@ namespace WhatsAppUI.Seeders
 
         public async Task SeedAsync()
         {
-            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "TechIntern");
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
 
             if (role == null)
             {
