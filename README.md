@@ -86,6 +86,7 @@ SAMS implements a granular **Policy-Based Access Control (PBAC)** system mapped 
 * .NET 8 SDK
 * SQL Server instance(s) for frontend and backend databases
 * Visual Studio 2022 / VS Code
+* Tailwind CSS
 
 ### Installation
 
@@ -95,8 +96,73 @@ SAMS implements a granular **Policy-Based Access Control (PBAC)** system mapped 
 git clone https://github.com/your-org/sams.git
 cd sams
 ```
+2. Configure Tailwind:
 
-2. Configure connection strings in `appsettings.json`:
+
+### Tailwind Config
+# Tailwind CSS 4 Setup Guide
+
+### 1. **Initialize your project**
+
+Navigate to your cloned project folder:
+
+```bash
+npm init -y
+```
+
+### 2. **Install Tailwind CSS and its dependencies**
+
+Run:
+
+```bash
+npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+```
+### 3. Tailwind has already been initialized in your cloned project files ie: tailwind.config.js, postcss.config.js and input .css
+### 4. **Build your CSS**
+
+Add a build script to your `package.json`:
+
+```json
+"scripts": {
+  "build:css": "tailwindcss -i ./src/styles/input.css -o ./dist/output.css --minify"
+}
+```
+
+Run:
+
+```bash
+npm run build:css
+```
+
+This generates a minified CSS file with only the used styles in `./dist/output.css`.
+
+### 5. **Include the generated CSS file in your project**
+
+Add the CSS file to your HTML or layout:
+
+```html
+<link href="/dist/output.css" rel="stylesheet">
+```
+
+---
+
+### Optional: **Watch for changes during development**
+
+You can add a script to watch for changes and rebuild CSS automatically:
+
+```json
+"scripts": {
+  "watch:css": "tailwindcss -i ./src/styles/tailwind.css -o ./dist/output.css --watch"
+}
+```
+
+Run with:
+
+```bash
+npm run watch:css
+```
+
+3. Configure connection strings in `appsettings.json`:
 
 * Frontend database connection
 * Backend database connection
@@ -104,11 +170,11 @@ cd sams
 // Please look at appsettings.development.json and change marked areas as desired in order to ensure the system fucntions.
 //These configurations should be done specifically in appsettings.json
 
-3. Apply migrations separately on both databases to create schema.
+4. Apply migrations separately on both databases to create schema.
 
-4. Run the frontend and backend projects.
+5. Run the frontend and backend projects.
 
-5. Use seeded SuperAdmin credentials to login and begin management.
+6. Use seeded SuperAdmin credentials to login and begin management.
 
 ---
 
