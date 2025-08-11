@@ -27,6 +27,7 @@ packages/
 
 # EF Core Migrations Snapshot (optional if auto-generated and shouldn't be tracked)
 **/Migrations/*Snapshot.cs
+Migrations/
 
 # ASP.NET sensitive config
 appsettings.json

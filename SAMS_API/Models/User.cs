@@ -19,6 +19,8 @@ namespace SamsApi.Models
         { get; set; }
         public DateTime CreatedAt
         { get; set; } = DateTime.UtcNow;
+        public string Description
+        { get; set; }
         public bool isActive
         { get; set; } = true;
         public int RoleId

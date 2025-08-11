@@ -38,6 +38,7 @@ namespace SamsApi.Services.Implementations
                 Id = Guid.NewGuid(),
                 UserName = dto.UserName,
                 UserSecret = GenerateSecret(),
+                Description = dto.Description,
                 RoleId = 1,
                 isActive = true
             };

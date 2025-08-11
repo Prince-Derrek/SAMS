@@ -12,6 +12,9 @@
         { get; set; }
         public DateTime? CreatedAt
         { get; set; }
+        
+        public string Description
+        { get; set; }
         public string role
         { get; set; }
         public bool isActive
