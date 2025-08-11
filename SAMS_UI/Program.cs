@@ -25,7 +25,7 @@ builder.Services.AddHttpClient("BackendApi", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"]!);
 });
-builder.Services.AddScoped<AuthTokenManager>();
+builder.Services.AddSingleton<AuthTokenManager>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IUpdateUserActivityStatus, UpdateUserActivityStatus>();
 builder.Services.AddScoped<IRegisterUserService, RegisterUserService>();
@@ -58,6 +58,12 @@ builder.Services.AddAuthentication("Cookies")
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var tokenManager = scope.ServiceProvider.GetRequiredService<AuthTokenManager>();
+    await tokenManager.GetTokenAsync(); // Force initial login
+}
 
 
 using (var scope = app.Services.CreateScope())

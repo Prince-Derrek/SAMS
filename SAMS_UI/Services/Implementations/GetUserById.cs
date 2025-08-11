@@ -1,53 +1,47 @@
-﻿using SAMS_UI.Services.Interfaces;
+﻿using SAMS_UI.Data;
+using SAMS_UI.Services.Interfaces;
 using SAMS_UI.ViewModels;
-using System.Net.Http.Headers;
-using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace SAMS_UI.Services.Implementations
 {
     public class GetUserById : IGetUserById
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly AuthTokenManager _tokenManager;
+        private readonly AppDbContext _context;
         private readonly ILogger<GetUserById> _logger;
 
-        public GetUserById(IHttpClientFactory httpClientFactory, AuthTokenManager tokenManager, ILogger<GetUserById> logger)
+        public GetUserById(AppDbContext context, ILogger<GetUserById> logger)
         {
-            _httpClientFactory = httpClientFactory;
-            _tokenManager = tokenManager;
+            _context = context;
             _logger = logger;
         }
+
         public async Task<UserViewModel> GetUserByIdAsync(Guid id)
         {
-            _logger.LogInformation("Calling token Manager service ");
-            var token = await _tokenManager.GetTokenAsync();
+            _logger.LogInformation("Querying frontend database for user with Id {UserId}", id);
 
-            _logger.LogInformation("Creating client");
-            var client = _httpClientFactory.CreateClient("BackendApi");
-            _logger.LogInformation("Client created successfully");
+            var user = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.Role) // Ensure role is loaded
+                .FirstOrDefaultAsync(u => u.Id == id);
 
-            _logger.LogInformation("Binding token to headers");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            _logger.LogInformation("Token bound successfully");
-
-            _logger.LogInformation("Attempting to reach get user by Id endpoint");
-            var response = await client.GetAsync($"/api/user/{id}");
-            if (!response.IsSuccessStatusCode)
+            if (user == null)
             {
-                _logger.LogInformation("Failed to reach get user by id endpoint");
-                return new();
-            }
-            else
-            {
-                _logger.LogInformation("Get user by id endpoint reached successfully");
+                _logger.LogWarning("No user found in frontend database with Id {UserId}", id);
+                return new UserViewModel();
             }
 
-            var json = await response.Content.ReadAsStreamAsync();
-            var users = await JsonSerializer.DeserializeAsync<UserViewModel>(json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            _logger.LogInformation("User returned");
+            _logger.LogInformation("User found in frontend database with Id {UserId}", id);
 
-            return users ?? new();
+            return new UserViewModel
+            {
+                Id = user.Id,
+                UserName = user.Username,
+                UserSecret = user.UserSecret,
+                Role = user.Role?.Name,
+                isActive = user.IsActive,
+                CreatedAt = user.CreatedAt
+            };
         }
     }
 }

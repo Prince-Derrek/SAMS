@@ -74,7 +74,9 @@ namespace SAMS_UI.Controllers
             return View(user);
         }
 
-        [Authorize(Policy = "CanDisableUsers")]
+        //Will come back to this later
+
+       /* [Authorize(Policy = "CanDisableUsers")]
         [HttpPost]
         public async Task<IActionResult> ToggleBackendUserActivity(Guid userId, bool isActive)
         {
@@ -92,7 +94,7 @@ namespace SAMS_UI.Controllers
             }
 
             return RedirectToAction("Index");
-        }
+        } */
         [Authorize(Policy = "CanDisableUsers")]
         [HttpPost]
         public async Task<IActionResult> ToggleFrontendUserActivity(Guid userId, bool isActive)

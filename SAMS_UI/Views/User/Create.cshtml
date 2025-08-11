@@ -11,7 +11,7 @@
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m15 19-7-7 7-7" />
             </svg>
         </a>
-        <h3 class="text-l font-nunito-sans text-matisse-600 dark:text-matisse-900">CREATE APP</h3>
+        <h3 class="text-l font-nunito-sans text-matisse-600 dark:text-matisse-900">REGISTER USER</h3>
     </div>
 
     <!-- Form -->
@@ -19,7 +19,7 @@
         <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm"></div>
 
         <div>
-            <label asp-for="userName" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">APP NAME</label>
+            <label asp-for="userName" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">USERNAME</label>
             <input asp-for="userName"
                    class="w-96 bg-blue-50/70 border border-gray-300 text-gray-900 text-sm focus:ring-matisse-600 focus:border-matisse-600 block p-2.5 dark:bg-matisse-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
                    placeholder="Test Application" required />
@@ -27,7 +27,7 @@
         </div>
 
         <div>
-            <label asp-for="Description" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">APP DESCRIPTION</label>
+            <label asp-for="Description" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">USER DESCRIPTION</label>
             <textarea asp-for="Description"
                       rows="4"
                       class="w-96 p-2.5 text-sm text-gray-900 bg-blue-50 border border-gray-300 focus:ring-matisse-600 focus:border-matisse-600 dark:bg-matisse-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
@@ -36,7 +36,7 @@
         </div>
 
         <div>
-            <label asp-for="RoleId" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">Role</label>
+            <label asp-for="RoleId" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">ROLE</label>
             <textarea asp-for="RoleId"
                       rows="4"
                       class="w-96 p-2.5 text-sm text-gray-900 bg-blue-50 border border-gray-300 focus:ring-matisse-600 focus:border-matisse-600 dark:bg-matisse-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
