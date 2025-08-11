@@ -2,9 +2,11 @@
 {
     public class UserDTO
     {
-        public string userName
-        { get; set; }
-        public string userRole
-        { get; set; }
+        public Guid Id { get; set; }
+        public string userName { get; set; }
+        public string userSecret { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string Description { get; set; }
+        public bool isActive { get; set; }
     }
 }

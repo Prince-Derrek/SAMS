@@ -6,7 +6,7 @@ namespace SAMS_UI.ViewModels
     {
         public string userName { get; set; }
         public string? Description { get; set; }
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
 
         // New property for the dropdown
         public List<Role> AvailableRoles { get; set; } = new();

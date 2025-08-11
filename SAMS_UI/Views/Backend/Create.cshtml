@@ -1,17 +1,17 @@
 ﻿@model SAMS_UI.ViewModels.RegisterViewModel
 @{
-    ViewData["Title"] = "Create User";
+    ViewData["Title"] = "Create Dashboard";
 }
 
-<section class="dark:bg-white">
+<section class="bg-white dark:bg-white">
     <!-- Header and Back link -->
     <div class="flex items-center mb-8 pb-4 gap-3">
-        <a asp-controller="User" asp-action="Index" class="text-gray-400 border border-gray-400 dark:text-black hover:text-matisse-600 transition-colors">
+        <a asp-controller="Backend" asp-action="Index" class="text-gray-400 border border-gray-400 dark:text-black hover:text-matisse-600 transition-colors">
             <svg class="w-[22px] h-[22px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m15 19-7-7 7-7" />
             </svg>
         </a>
-        <h3 class="text-l font-nunito-sans text-matisse-600 dark:text-matisse-900">REGISTER USER</h3>
+        <h3 class="text-l font-nunito-sans text-matisse-600 dark:text-matisse-900">CREATE DASHBOARD</h3>
     </div>
 
     <!-- Form -->
@@ -19,18 +19,18 @@
         <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm"></div>
 
         <div>
-            <label asp-for="userName" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">USERNAME</label>
+            <label asp-for="userName" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">DASHBOARD NAME</label>
             <input asp-for="userName"
-                   class="w-96 bg-blue-50/70 border border-gray-300 text-gray-900 text-sm focus:ring-matisse-600 focus:border-matisse-600 block p-2.5 dark:bg-matisse-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
+                   class="w-96 bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-matisse-600 focus:border-matisse-600 block p-2.5 dark:bg-matisse-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
                    placeholder="Test Application" required />
             <span asp-validation-for="userName" class="text-red-500 text-sm"></span>
         </div>
 
         <div>
-            <label asp-for="Description" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">USER DESCRIPTION</label>
+            <label asp-for="Description" class="block mb-2 text-sm font-medium text-masala-800 dark:text-matisse-900">DASHBOARD DESCRIPTION</label>
             <textarea asp-for="Description"
                       rows="4"
-                      class="w-96 p-2.5 text-sm text-gray-900 bg-blue-50 border border-gray-300 focus:ring-matisse-600 focus:border-matisse-600 dark:bg-matisse-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
+                      class="w-96 p-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-300 focus:ring-matisse-600 focus:border-matisse-600 dark:bg-matisse-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
                       placeholder="Short description of the app..."></textarea>
             <span asp-validation-for="Description" class="text-red-500 text-sm"></span>
         </div>
@@ -93,26 +93,3 @@
         </div>
     </form>
 </section>
- 
-@section Scripts {
-    <script>
-        function selectRole(id, name) {
-            document.getElementById('RoleId').value = id;
-            document.getElementById('roleDropdownButton').innerHTML = `
-                ${name}
-                <svg class="w-2.5 h-2.5 ms-3"
-                     aria-hidden="true"
-                     xmlns="http://www.w3.org/2000/svg"
-                     fill="none"
-                     viewBox="0 0 10 6">
-                    <path stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="m1 1 4 4 4-4" />
-                </svg>`;
-        }
-    </script>
-
-
-}

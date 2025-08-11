@@ -45,7 +45,7 @@ namespace SAMS_UI.Services.Implementations
                     Id = Guid.NewGuid(),
                     Username = user.userName,
                     UserSecret = GenerateSecret(),
-                    RoleId = user.RoleId,
+                    RoleId = (int)user.RoleId,
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow
                 };

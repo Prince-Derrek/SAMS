@@ -34,6 +34,7 @@ builder.Services.AddScoped<IRolePolicyQueryService, RolePolicyQueryService>();
 builder.Services.AddScoped<IRolePolicyService, RolePolicyService>();
 builder.Services.AddScoped<IViewPolicyService, ViewPolicyService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBackendDashboardQueryService, BackendDashboardQueryService>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PolicyProvider>();
 builder.Services.AddScoped<IAuthorizationHandler, PolicyHandler>();
 
